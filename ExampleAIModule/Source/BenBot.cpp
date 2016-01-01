@@ -7,13 +7,9 @@ using namespace Filter;
 
 void ExampleAIModule::onStart()
 {
-	m_hasScout = false;
-	BWTA::readMap();
-	BWTA::analyze();
-	m_baseLocations = BWTA::getStartLocations();
-	m_startLocation = BWTA::getStartLocation(Broodwar->self())->getRegion();
 	m_buildQueue.push(UnitTypes::Terran_Supply_Depot);
 	m_buildQueue.push(UnitTypes::Terran_Barracks);
+	m_buildQueue.push(UnitTypes::Terran_Refinery);
 	Broodwar->sendText("This is BenBot");
 
 	// Print the map name.
@@ -106,6 +102,8 @@ void ExampleAIModule::onFrame()
 		// Finally make the unit do some stuff!
 
 		int currentSupply = Broodwar->self()->supplyUsed() / 2;
+		m_scoutingManager.update();
+
 		// If the unit is a worker unit
 		if (u->getType().isWorker())
 		{
@@ -137,34 +135,12 @@ void ExampleAIModule::onFrame()
 		{
 			u->build(UnitTypes::Terran_Marine);
 		}
-
 		else if (u->getType().isResourceDepot()) // A resource depot is a Command Center, Nexus, or Hatchery
 		{
-			if (!m_hasScout)
+			if (!m_scoutingManager.hasScout())
 			{
-				m_scout = u->getClosestUnit(GetType == UnitTypes::Terran_SCV && (IsIdle || IsGatheringMinerals));
-				m_hasScout = true;
-			}
-			else
-			{
-				//go to each scouting location
-				if (m_baseLocations.size())
-				{
-					auto i = m_baseLocations.begin();
-					m_scout->move((*i)->getPosition());
-					if (m_scout->getPosition().getApproxDistance((*i)->getPosition()) < 100)
-					{
-						//close enough so knock it off the list
-
-						m_baseLocations.erase(m_baseLocations.begin());
-						i = m_baseLocations.begin();
-					}
-
-				}
-				else
-				{
-					//no more scouting locations 
-				}
+				Unit scout = u->getClosestUnit(GetType == UnitTypes::Terran_SCV && (IsIdle || IsGatheringMinerals));
+				m_scoutingManager.setScout(scout);
 			}
 
 
@@ -295,6 +271,20 @@ void ExampleAIModule::onUnitEvade(BWAPI::Unit unit)
 
 void ExampleAIModule::onUnitShow(BWAPI::Unit unit)
 {
+	if (unit->getPlayer()->isEnemy(Broodwar->self()))
+	{
+		//found an enemy unit
+
+
+		if (unit->getType().isResourceDepot())
+		{
+			//found an enemy base
+			if (!m_scoutingManager.foundEnemyMain())
+			{
+				m_scoutingManager.setEnemyMain(BWTA::getRegion(unit->getPosition()));
+			}
+		}
+	}
 }
 
 void ExampleAIModule::onUnitHide(BWAPI::Unit unit)

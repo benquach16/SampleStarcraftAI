@@ -3,6 +3,8 @@
 #include <queue>
 #include <BWTA.h>
 
+#include "ScoutingManager.h"
+
 // Remember not to use "Broodwar" in any global class constructor!
 
 class ExampleAIModule : public BWAPI::AIModule
@@ -30,11 +32,8 @@ public:
 
 protected:
 	bool followingBuildOrder;
-	bool m_hasScout;
-	BWAPI::Unit m_scout;
-	BWTA::Region *m_startLocation;
 	std::queue<BWAPI::UnitType> m_buildQueue;
-	std::set<BWTA::BaseLocation*> m_baseLocations;
 
+	ScoutingManager m_scoutingManager;
 
 };

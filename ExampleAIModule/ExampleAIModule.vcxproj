@@ -101,10 +101,11 @@
   <ItemGroup>
     <ClCompile Include="Source\Dll.cpp" />
     <ClCompile Include="Source\BenBot.cpp" />
+    <ClCompile Include="Source\ScoutingManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ScoutingManager.h" />
     <ClInclude Include="Source\BenBot.h" />
+    <ClInclude Include="Source\ScoutingManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
