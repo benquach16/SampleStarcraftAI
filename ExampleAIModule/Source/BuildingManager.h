@@ -18,7 +18,13 @@ class BuildingManager
 public:
 
 	BuildingManager();
-	void build(BWAPI::UnitType building);
+
+	//for when we want to queue a building
+	void buildQueue(BWAPI::UnitType building);
+	//for when we want to build something now, fuck build orders
+	void buildAsync(BWAPI::UnitType building);
+
+	//this is used to REMOVE from the currently building list
 	void buildingStarted(BWAPI::Unit building);
 	void update();
 	int getReservedMinerals();
@@ -29,11 +35,15 @@ public:
 	BWAPI::Unit getAvailableWorker();
 
 protected:
+	void beginConstructingBuilding(BWAPI::UnitType building);
 
 	int reservedMinerals;
 	int reservedGas;
 
-	std::queue<BWAPI::UnitType> m_buildingsToBuild;
+	std::queue<BWAPI::UnitType> m_buildingQueue;
+	std::vector<BWAPI::UnitType> m_buildingsToBuild;
+
+	//convert this into a map or something eventually - associative array
 	std::vector<buildingCommand> m_currentlyBuilding;
 
 };

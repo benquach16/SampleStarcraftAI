@@ -53,6 +53,8 @@ void ScoutingManager::update()
 		else
 		{
 			//no more scouting
+			//go home
+			m_scout->move(m_startLocation->getCenter());
 			removeScout();
 		}
 	}
