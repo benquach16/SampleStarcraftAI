@@ -34,6 +34,13 @@ void ScoutingManager::update()
 {
 	//go to each scouting location
 	//and find enemy main
+	if (m_scout && m_enemyLocation)
+	{
+		//no more scouting
+		//go home
+		m_scout->move(m_startLocation->getCenter());
+		removeScout();
+	}
 	if (m_scout && !m_enemyLocation)
 	{
 		
@@ -52,10 +59,7 @@ void ScoutingManager::update()
 		}
 		else
 		{
-			//no more scouting
-			//go home
-			m_scout->move(m_startLocation->getCenter());
-			removeScout();
+
 		}
 	}
 

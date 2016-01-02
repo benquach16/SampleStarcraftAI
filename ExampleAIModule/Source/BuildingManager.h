@@ -33,6 +33,7 @@ public:
 	int getAvailableGas();
 
 	BWAPI::Unit getAvailableWorker();
+	BWAPI::Unit getAvailableWorker(BWAPI::Position p);
 
 protected:
 	void beginConstructingBuilding(BWAPI::UnitType building);
