@@ -21,11 +21,25 @@ void BuildingManager::buildAsync(UnitType building)
 
 void BuildingManager::update()
 {
+	//check if a refinery is done
+	for (auto &u : Broodwar->self()->getUnits())
+	{
+		if (!u->getType().isBuilding() || !u->isBeingConstructed())
+		{
+			continue;
+		}
+		buildingStarted(u);
+		
+	}
+
+
 	if (m_buildingQueue.size())
 	{
 		UnitType building = m_buildingQueue.front();
 		if (getAvailableMinerals() >= building.mineralPrice() && getAvailableGas() >= building.gasPrice())
 		{
+			std::string str("building " + building.getName());
+			Broodwar->sendText(str.c_str());
 			beginConstructingBuilding(building);
 			m_buildingQueue.pop();
 		}
@@ -65,8 +79,11 @@ void BuildingManager::update()
 
 
 			//that bitch went back to mining
-			//must have somehow hit a race condition with minerals again
+			//must have somehow hit a race condition with minerals again or for some reason just did not start mining
 			//so restart
+			Broodwar->sendText("wtf?");
+			Broodwar->sendText(m_currentlyBuilding[i].m_building.getName().c_str());
+			m_currentlyBuilding[i].m_buildingWorker = getAvailableWorker();
 			m_currentlyBuilding[i].m_buildingWorker->build(m_currentlyBuilding[i].m_building, m_currentlyBuilding[i].m_buildingLocation);
 		}
 		
@@ -108,6 +125,7 @@ int BuildingManager::getAvailableGas()
 	return (Broodwar->self()->gas() - reservedGas);
 }
 
+
 Unit BuildingManager::getAvailableWorker()
 {
 	//TEMPORARY FOR REAL
@@ -123,11 +141,12 @@ Unit BuildingManager::getAvailableWorker()
 		if (!u->isCompleted() || u->isConstructing())
 			continue;
 
-		if (u->getType().isWorker() && (u->isCarryingGas() || u->isCarryingMinerals()))
+		if (u->getType().isWorker() && u->isGatheringMinerals())
 		{
 			return u;
 		}
 	}
+	return 0;
 }
 
 void BuildingManager::beginConstructingBuilding(BWAPI::UnitType building)
@@ -135,14 +154,21 @@ void BuildingManager::beginConstructingBuilding(BWAPI::UnitType building)
 	//have enough minerals - for now
 	//make sure we keep track of the worker so that we dont 'lose' the building if we run out of minerals
 	Unit builder = getAvailableWorker();
-	TilePosition targetBuildLocation = Broodwar->getBuildLocation(building, builder->getTilePosition());
-	builder->build(building, targetBuildLocation);
+	if (builder)
+	{
+		TilePosition targetBuildLocation = Broodwar->getBuildLocation(building, builder->getTilePosition());
+		builder->build(building, targetBuildLocation);
 
-	//reserve the minerals because race conditions
-	reservedMinerals += building.mineralPrice();
-	reservedGas += building.gasPrice();
+		//reserve the minerals because race conditions
+		reservedMinerals += building.mineralPrice();
+		reservedGas += building.gasPrice();
 
-	//add this to a list of currently constructing buildings
-	buildingCommand cmd(builder, building, targetBuildLocation);
-	m_currentlyBuilding.push_back(cmd);
+		//add this to a list of currently constructing buildings
+		buildingCommand cmd(builder, building, targetBuildLocation);
+		m_currentlyBuilding.push_back(cmd);
+	}
+	else
+	{
+		Broodwar->sendText("This should not happen");
+	}
 }

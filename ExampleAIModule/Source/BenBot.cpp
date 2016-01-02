@@ -11,6 +11,7 @@ void ExampleAIModule::onStart()
 	m_buildingManager.buildQueue(UnitTypes::Terran_Supply_Depot);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Barracks);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Refinery);
+	m_buildingManager.buildQueue(UnitTypes::Terran_Factory);
 	// Print the map name.
 	// BWAPI returns std::string when retrieving a string, don't forget to add .c_str() when printing!
 	Broodwar << "The map is " << Broodwar->mapName() << "!" << std::endl;
@@ -133,7 +134,21 @@ void ExampleAIModule::onFrame()
 		}
 		else if (u->getType() == UnitTypes::Terran_Barracks && !u->isTraining())
 		{
-			u->build(UnitTypes::Terran_Marine);
+			if (availMinerals >= UnitTypes::Terran_Marine.mineralPrice())
+				u->build(UnitTypes::Terran_Marine);
+		}
+		else if (u->getType() == UnitTypes::Terran_Factory && u->isCompleted())
+		{
+			if (u->getAddon() == 0)
+			{
+				//build an addon if there is none
+				u->buildAddon(UnitTypes::Terran_Machine_Shop);
+			}
+			else
+			{
+				//build siege tanks
+				u->build(UnitTypes::Terran_Siege_Tank_Tank_Mode);
+			}
 		}
 		else if (u->getType().isResourceDepot()) // A resource depot is a Command Center, Nexus, or Hatchery
 		{
@@ -282,11 +297,6 @@ void ExampleAIModule::onUnitHide(BWAPI::Unit unit)
 
 void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
 {
-	if (unit->getType().isBuilding() && unit->getPlayer() == Broodwar->self())
-	{
-		Broodwar->sendText(unit->getType().getName().c_str());
-		m_buildingManager.buildingStarted(unit);
-	}
 	if (Broodwar->isReplay())
 	{
 		// if we are in a replay, then we will print out the build order of the structures

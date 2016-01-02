@@ -33,6 +33,8 @@ public:
 
 protected:
 	bool followingBuildOrder;
+	
+	std::vector<BWAPI::Unit> m_expansions;
 
 	ScoutingManager m_scoutingManager;
 	BuildingManager m_buildingManager;

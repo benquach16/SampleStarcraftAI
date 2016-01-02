@@ -16,7 +16,6 @@ struct buildingCommand
 class BuildingManager
 {
 public:
-
 	BuildingManager();
 
 	//for when we want to queue a building
@@ -32,6 +31,8 @@ public:
 	int getAvailableMinerals();
 	int getAvailableGas();
 
+
+	//TODO:: get worker from latest available expansion
 	BWAPI::Unit getAvailableWorker();
 	BWAPI::Unit getAvailableWorker(BWAPI::Position p);
 
@@ -48,4 +49,6 @@ protected:
 	std::vector<buildingCommand> m_currentlyBuilding;
 
 };
+
+
 
