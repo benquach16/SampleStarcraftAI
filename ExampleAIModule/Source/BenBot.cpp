@@ -9,6 +9,8 @@ void ExampleAIModule::onStart()
 {
 	Broodwar->sendText("This is BenBot");
 	m_buildingManager.build(UnitTypes::Terran_Supply_Depot);
+	m_buildingManager.build(UnitTypes::Terran_Barracks);
+	m_buildingManager.build(UnitTypes::Terran_Refinery);
 	// Print the map name.
 	// BWAPI returns std::string when retrieving a string, don't forget to add .c_str() when printing!
 	Broodwar << "The map is " << Broodwar->mapName() << "!" << std::endl;
@@ -100,7 +102,7 @@ void ExampleAIModule::onFrame()
 		// Finally make the unit do some stuff!
 
 		int currentSupply = Broodwar->self()->supplyUsed() / 2;
-
+		int availMinerals = m_buildingManager.getAvailableMinerals();
 
 		// If the unit is a worker unit
 		if (u->getType().isWorker())
@@ -142,10 +144,9 @@ void ExampleAIModule::onFrame()
 			}
 
 
-	
 
 			// Order the depot to construct more workers! But only when it is idle.
-			if (u->isIdle() && !u->train(u->getType().getRace().getWorker()))
+			if (u->isIdle() && availMinerals > 50 && !u->train(u->getType().getRace().getWorker()))
 			{
 				// If that fails, draw the error at the location so that you can visibly see what went wrong!
 				// However, drawing the error once will only appear for a single frame
@@ -282,6 +283,10 @@ void ExampleAIModule::onUnitHide(BWAPI::Unit unit)
 void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
 {
 	Broodwar->sendText(unit->getType().getName().c_str());
+	if (unit->getType().isBuilding() && unit->getPlayer() == Broodwar->self())
+	{
+		m_buildingManager.buildingStarted(unit);
+	}
 	if (Broodwar->isReplay())
 	{
 		// if we are in a replay, then we will print out the build order of the structures
