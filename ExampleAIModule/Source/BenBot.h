@@ -4,6 +4,7 @@
 #include <BWTA.h>
 
 #include "ScoutingManager.h"
+#include "BuildingManager.h"
 
 // Remember not to use "Broodwar" in any global class constructor!
 
@@ -32,8 +33,8 @@ public:
 
 protected:
 	bool followingBuildOrder;
-	std::queue<BWAPI::UnitType> m_buildQueue;
 
 	ScoutingManager m_scoutingManager;
+	BuildingManager m_buildingManager;
 
 };

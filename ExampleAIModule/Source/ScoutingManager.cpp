@@ -33,6 +33,7 @@ void ScoutingManager::setEnemyMain(BWTA::Region *enemyLocation)
 void ScoutingManager::update()
 {
 	//go to each scouting location
+	//and find enemy main
 	if (m_scout && !m_enemyLocation)
 	{
 		
@@ -52,8 +53,11 @@ void ScoutingManager::update()
 		else
 		{
 			//no more scouting
+			removeScout();
 		}
 	}
+
+
 }
 
 bool ScoutingManager::hasScout()

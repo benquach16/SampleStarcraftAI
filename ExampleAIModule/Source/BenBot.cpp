@@ -7,11 +7,8 @@ using namespace Filter;
 
 void ExampleAIModule::onStart()
 {
-	m_buildQueue.push(UnitTypes::Terran_Supply_Depot);
-	m_buildQueue.push(UnitTypes::Terran_Barracks);
-	m_buildQueue.push(UnitTypes::Terran_Refinery);
 	Broodwar->sendText("This is BenBot");
-
+	m_buildingManager.build(UnitTypes::Terran_Supply_Depot);
 	// Print the map name.
 	// BWAPI returns std::string when retrieving a string, don't forget to add .c_str() when printing!
 	Broodwar << "The map is " << Broodwar->mapName() << "!" << std::endl;
@@ -78,7 +75,8 @@ void ExampleAIModule::onFrame()
 	// Latency frames are the number of frames before commands are processed.
 	if (Broodwar->getFrameCount() % Broodwar->getLatencyFrames() != 0)
 		return;
-
+	m_scoutingManager.update();
+	m_buildingManager.update();
 	// Iterate through all the units that we own
 	for (auto &u : Broodwar->self()->getUnits())
 	{
@@ -102,7 +100,7 @@ void ExampleAIModule::onFrame()
 		// Finally make the unit do some stuff!
 
 		int currentSupply = Broodwar->self()->supplyUsed() / 2;
-		m_scoutingManager.update();
+
 
 		// If the unit is a worker unit
 		if (u->getType().isWorker())
@@ -137,24 +135,14 @@ void ExampleAIModule::onFrame()
 		}
 		else if (u->getType().isResourceDepot()) // A resource depot is a Command Center, Nexus, or Hatchery
 		{
-			if (!m_scoutingManager.hasScout())
+			if (!m_scoutingManager.hasScout() && !m_scoutingManager.foundEnemyMain())
 			{
 				Unit scout = u->getClosestUnit(GetType == UnitTypes::Terran_SCV && (IsIdle || IsGatheringMinerals));
 				m_scoutingManager.setScout(scout);
 			}
 
 
-			if (m_buildQueue.size())
-			{
-				UnitType type = m_buildQueue.front();
-				if (Broodwar->self()->minerals() > type.mineralPrice())
-				{
-					Unit supplyBuilder = u->getClosestUnit(GetType == UnitTypes::Terran_SCV && (IsIdle || IsGatheringMinerals));
-					TilePosition tile = Broodwar->getBuildLocation(type, supplyBuilder->getTilePosition());
-					supplyBuilder->build(type, tile);
-					m_buildQueue.pop();
-				}
-			}
+	
 
 			// Order the depot to construct more workers! But only when it is idle.
 			if (u->isIdle() && !u->train(u->getType().getRace().getWorker()))
@@ -293,6 +281,7 @@ void ExampleAIModule::onUnitHide(BWAPI::Unit unit)
 
 void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
 {
+	Broodwar->sendText(unit->getType().getName().c_str());
 	if (Broodwar->isReplay())
 	{
 		// if we are in a replay, then we will print out the build order of the structures
