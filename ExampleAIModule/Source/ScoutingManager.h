@@ -14,6 +14,8 @@ public:
 	void update();
 	bool hasScout();
 	bool foundEnemyMain();
+
+	BWAPI::TilePosition getEnemyLocation();
 protected:
 	BWAPI::Unit m_scout;
 	BWTA::Region *m_startLocation;

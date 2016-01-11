@@ -104,6 +104,14 @@ void ExampleAIModule::onFrame()
 
 		int currentSupply = Broodwar->self()->supplyUsed() / 2;
 		int availMinerals = m_buildingManager.getAvailableMinerals();
+		int availGas = m_buildingManager.getAvailableGas();
+
+		if (!u->getType().isBuilding() && !u->getType().isWorker())
+		{
+
+			//not a building or a worker so an army unit
+			
+		}
 
 		// If the unit is a worker unit
 		if (u->getType().isWorker())
@@ -142,7 +150,8 @@ void ExampleAIModule::onFrame()
 			if (u->getAddon() == 0)
 			{
 				//build an addon if there is none
-				u->buildAddon(UnitTypes::Terran_Machine_Shop);
+				if (availMinerals >= UnitTypes::Terran_Machine_Shop.mineralPrice() && availGas >= UnitTypes::Terran_Machine_Shop.gasPrice())
+					u->buildAddon(UnitTypes::Terran_Machine_Shop);
 			}
 			else
 			{
