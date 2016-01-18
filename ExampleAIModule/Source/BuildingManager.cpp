@@ -73,7 +73,7 @@ void BuildingManager::update()
 			m_currentlyBuilding[i].m_buildingWorker->build(m_currentlyBuilding[i].m_building, m_currentlyBuilding[i].m_buildingLocation);
 			
 		}
-		if (m_currentlyBuilding[i].m_buildingWorker->isGatheringMinerals() || m_currentlyBuilding[i].m_buildingWorker->isGatheringGas())
+		else if (m_currentlyBuilding[i].m_buildingWorker->isGatheringMinerals() || m_currentlyBuilding[i].m_buildingWorker->isGatheringGas())
 		{
 			//THIS SHOULD NOT HAPPEN
 
@@ -85,6 +85,11 @@ void BuildingManager::update()
 			Broodwar->sendText(m_currentlyBuilding[i].m_building.getName().c_str());
 			m_currentlyBuilding[i].m_buildingWorker = getAvailableWorker();
 			m_currentlyBuilding[i].m_buildingWorker->build(m_currentlyBuilding[i].m_building, m_currentlyBuilding[i].m_buildingLocation);
+		}
+		else
+		{
+			//uncomment this if you have a bug where a building is stuck in the queue or if you just like being spammed
+			//Broodwar->sendText("Something still in build queue!");
 		}
 		
 	}

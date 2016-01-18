@@ -38,5 +38,6 @@ protected:
 
 	ScoutingManager m_scoutingManager;
 	BuildingManager m_buildingManager;
-
+	//temmporary = have a manager for this!!!
+	int m_workersMiningGas;
 };

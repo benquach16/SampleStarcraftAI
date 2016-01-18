@@ -7,11 +7,13 @@ using namespace Filter;
 
 void ExampleAIModule::onStart()
 {
+	m_workersMiningGas = 0;
 	Broodwar->sendText("This is BenBot");
 	m_buildingManager.buildQueue(UnitTypes::Terran_Supply_Depot);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Barracks);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Refinery);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Factory);
+	m_buildingManager.buildQueue(UnitTypes::Terran_Supply_Depot);
 	// Print the map name.
 	// BWAPI returns std::string when retrieving a string, don't forget to add .c_str() when printing!
 	Broodwar << "The map is " << Broodwar->mapName() << "!" << std::endl;
@@ -130,7 +132,17 @@ void ExampleAIModule::onFrame()
 				else if (!u->getPowerUp())  // The worker cannot harvest anything if it
 				{                             // is carrying a powerup such as a flag
 					// Harvest from the nearest mineral patch or gas refinery
-					if (!u->gather(u->getClosestUnit(IsMineralField || IsRefinery)))
+					if (m_workersMiningGas < 3)
+					{
+						if (!u->gather(u->getClosestUnit(IsRefinery)))
+						{
+
+							// If the call fails, then print the last error message
+							//PROBABLY trying to mine from a refinery that is incomplete!!!
+							Broodwar << Broodwar->getLastError() << std::endl;
+						}
+					}
+					else if (!u->gather(u->getClosestUnit(IsMineralField)))
 					{
 						// If the call fails, then print the last error message
 						Broodwar << Broodwar->getLastError() << std::endl;
@@ -153,11 +165,16 @@ void ExampleAIModule::onFrame()
 				if (availMinerals >= UnitTypes::Terran_Machine_Shop.mineralPrice() && availGas >= UnitTypes::Terran_Machine_Shop.gasPrice())
 					u->buildAddon(UnitTypes::Terran_Machine_Shop);
 			}
-			else
+			else if (!u->isTraining())
 			{
 				//build siege tanks
-				u->build(UnitTypes::Terran_Siege_Tank_Tank_Mode);
+				if (availMinerals >= UnitTypes::Terran_Siege_Tank_Tank_Mode.mineralPrice() && availGas >= UnitTypes::Terran_Siege_Tank_Tank_Mode.gasPrice())
+					u->build(UnitTypes::Terran_Siege_Tank_Tank_Mode);
 			}
+		}
+		else if (u->getType() == UnitTypes::Terran_Machine_Shop && u->isCompleted())
+		{
+			u->research(TechTypes::Tank_Siege_Mode);
 		}
 		else if (u->getType().isResourceDepot()) // A resource depot is a Command Center, Nexus, or Hatchery
 		{
