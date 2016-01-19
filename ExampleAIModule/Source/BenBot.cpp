@@ -115,9 +115,17 @@ void ExampleAIModule::onFrame()
 		{
 			//if unit can attack and sees enemy
 			Unit enemy = u->getClosestUnit(IsEnemy);
-			if (enemy)
+			if (!enemy)
 			{
-				u->attack(u->getPosition());
+
+				if (m_scoutingManager.foundEnemyMain())
+				{
+					u->attack(m_scoutingManager.getEnemyLocation());
+				}
+			}
+			else
+			{
+				u->attack(enemy);
 			}
 		}
 		// If the unit is a worker unit

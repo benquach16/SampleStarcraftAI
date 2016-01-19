@@ -75,3 +75,8 @@ bool ScoutingManager::foundEnemyMain()
 {
 	return m_enemyLocation;
 }
+
+Position ScoutingManager::getEnemyLocation()
+{
+	return m_enemyLocation->getCenter();
+}
