@@ -107,14 +107,19 @@ void ExampleAIModule::onFrame()
 		int currentSupply = Broodwar->self()->supplyUsed() / 2;
 		int availMinerals = m_buildingManager.getAvailableMinerals();
 		int availGas = m_buildingManager.getAvailableGas();
-
-		if (!u->getType().isBuilding() && !u->getType().isWorker())
+		if (u->getType() == UnitTypes::Terran_Siege_Tank_Tank_Mode)
 		{
-
-			//not a building or a worker so an army unit
-			
+			u->siege();
 		}
-
+		if (u->canAttack() && !u->getType().isWorker())
+		{
+			//if unit can attack and sees enemy
+			Unit enemy = u->getClosestUnit(IsEnemy);
+			if (enemy)
+			{
+				u->attack(u->getPosition());
+			}
+		}
 		// If the unit is a worker unit
 		if (u->getType().isWorker())
 		{
@@ -132,14 +137,20 @@ void ExampleAIModule::onFrame()
 				else if (!u->getPowerUp())  // The worker cannot harvest anything if it
 				{                             // is carrying a powerup such as a flag
 					// Harvest from the nearest mineral patch or gas refinery
+					//harvest gas is there is not enough gas
 					if (m_workersMiningGas < 3)
 					{
 						if (!u->gather(u->getClosestUnit(IsRefinery)))
 						{
 
 							// If the call fails, then print the last error message
-							//PROBABLY trying to mine from a refinery that is incomplete!!!
+							//PROBABLY trying to mine from a refinery that is incomplete, or no refinery exists
+							u->gather(u->getClosestUnit(IsMineralField));
 							Broodwar << Broodwar->getLastError() << std::endl;
+						}
+						else
+						{
+							m_workersMiningGas++;
 						}
 					}
 					else if (!u->gather(u->getClosestUnit(IsMineralField)))
