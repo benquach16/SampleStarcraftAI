@@ -31,6 +31,7 @@ public:
 	int getAvailableMinerals();
 	int getAvailableGas();
 
+	void createNewExpansion(BWAPI::TilePosition expo);
 
 	//TODO:: get worker from latest available expansion
 	BWAPI::Unit getAvailableWorker();

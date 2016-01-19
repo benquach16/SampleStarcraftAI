@@ -36,6 +36,8 @@ protected:
 	
 	std::vector<BWAPI::Unit> m_expansions;
 
+	BWTA::Region *m_enemyLocation;
+
 	ScoutingManager m_scoutingManager;
 	BuildingManager m_buildingManager;
 	//temmporary = have a manager for this!!!
