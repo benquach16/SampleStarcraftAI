@@ -14,8 +14,11 @@ Code Architecture
 There are two other classes - BuildingManager and ScoutingManager
 
 Currently the hiearchy works as follows
-	BenBot ---------------
-	 |                   |
-	 |                   |
-ScoutingManager     BuildingManager
+
+    BenBot 
+	
+	| ------------------
+	|                    \
+	
+    ScoutingManager     BuildingManager
 	

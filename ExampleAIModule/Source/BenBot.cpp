@@ -111,7 +111,7 @@ void ExampleAIModule::onFrame()
 		{
 			u->siege();
 		}
-		if (u->canAttack() && !u->getType().isWorker())
+		if (u->canAttack() && !u->getType().isWorker() && u->isIdle())
 		{
 			//if unit can attack and sees enemy
 			Unit enemy = u->getClosestUnit(IsEnemy);
