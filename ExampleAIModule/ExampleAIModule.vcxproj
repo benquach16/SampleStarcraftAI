@@ -99,12 +99,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ArmyManager.cpp" />
     <ClCompile Include="Source\BuildingManager.cpp" />
     <ClCompile Include="Source\Dll.cpp" />
     <ClCompile Include="Source\BenBot.cpp" />
     <ClCompile Include="Source\ScoutingManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\ArmyManager.h" />
     <ClInclude Include="Source\BenBot.h" />
     <ClInclude Include="Source\BuildingManager.h" />
     <ClInclude Include="Source\ScoutingManager.h" />

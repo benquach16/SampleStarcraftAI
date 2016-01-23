@@ -107,27 +107,13 @@ void ExampleAIModule::onFrame()
 		int currentSupply = Broodwar->self()->supplyUsed() / 2;
 		int availMinerals = m_buildingManager.getAvailableMinerals();
 		int availGas = m_buildingManager.getAvailableGas();
+		/*
 		if (u->getType() == UnitTypes::Terran_Siege_Tank_Tank_Mode)
 		{
 			u->siege();
 		}
-		if (u->canAttack() && !u->getType().isWorker() && u->isIdle())
-		{
-			//if unit can attack and sees enemy
-			Unit enemy = u->getClosestUnit(IsEnemy);
-			if (!enemy)
-			{
+		*/
 
-				if (m_scoutingManager.foundEnemyMain())
-				{
-					u->attack(m_scoutingManager.getEnemyLocation());
-				}
-			}
-			else
-			{
-				u->attack(enemy);
-			}
-		}
 		// If the unit is a worker unit
 		if (u->getType().isWorker())
 		{
@@ -174,7 +160,11 @@ void ExampleAIModule::onFrame()
 		else if (u->getType() == UnitTypes::Terran_Barracks && !u->isTraining())
 		{
 			if (availMinerals >= UnitTypes::Terran_Marine.mineralPrice())
+			{
+
 				u->build(UnitTypes::Terran_Marine);
+				m_armyManager.addArmyUnit(u);
+			}
 		}
 		else if (u->getType() == UnitTypes::Terran_Factory && u->isCompleted())
 		{
@@ -188,7 +178,11 @@ void ExampleAIModule::onFrame()
 			{
 				//build siege tanks
 				if (availMinerals >= UnitTypes::Terran_Siege_Tank_Tank_Mode.mineralPrice() && availGas >= UnitTypes::Terran_Siege_Tank_Tank_Mode.gasPrice())
+				{
+
 					u->build(UnitTypes::Terran_Siege_Tank_Tank_Mode);
+					m_armyManager.addArmyUnit(u);
+				}
 			}
 		}
 		else if (u->getType() == UnitTypes::Terran_Machine_Shop && u->isCompleted())

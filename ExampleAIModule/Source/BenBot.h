@@ -5,6 +5,8 @@
 
 #include "ScoutingManager.h"
 #include "BuildingManager.h"
+#include "ArmyManager.h"
+
 
 // Remember not to use "Broodwar" in any global class constructor!
 
@@ -40,6 +42,9 @@ protected:
 	
 	ScoutingManager m_scoutingManager;
 	BuildingManager m_buildingManager;
+	ArmyManager m_armyManager;
+	
 	//temmporary = have a manager for this!!!
 	int m_workersMiningGas;
+	int m_armyUnits;
 };
