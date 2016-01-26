@@ -342,8 +342,9 @@ void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
 
 	if (unit->getPlayer() == Broodwar->self())
 	{
-		if (unit->getType().canAttack())
+		if (unit->getType().canAttack() && !unit->getType().isWorker())
 		{
+			//has to be an army unitthen
 			m_armyManager.addArmyUnit(unit);
 		}
 	}
