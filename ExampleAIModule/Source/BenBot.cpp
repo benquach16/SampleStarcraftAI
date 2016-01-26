@@ -82,6 +82,7 @@ void ExampleAIModule::onFrame()
 		return;
 	m_scoutingManager.update();
 	m_buildingManager.update();
+	m_armyManager.update(m_enemyLocation);
 	// Iterate through all the units that we own
 	for (auto &u : Broodwar->self()->getUnits())
 	{
@@ -325,6 +326,7 @@ void ExampleAIModule::onUnitShow(BWAPI::Unit unit)
 			if (!m_scoutingManager.foundEnemyMain())
 			{
 				m_scoutingManager.setEnemyMain(BWTA::getRegion(unit->getPosition()));
+				m_enemyLocation = unit->getPosition();
 			}
 		}
 	}

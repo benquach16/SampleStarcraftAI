@@ -38,7 +38,7 @@ protected:
 	
 	std::vector<BWAPI::Unit> m_expansions;
 
-	BWAPI::TilePosition m_enemyLocation;
+	BWAPI::Position m_enemyLocation;
 	
 	ScoutingManager m_scoutingManager;
 	BuildingManager m_buildingManager;

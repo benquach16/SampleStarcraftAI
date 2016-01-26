@@ -20,14 +20,22 @@ void ArmyManager::update(BWAPI::Position enemyLocation)
 		else
 		{
 			//do army stuff
-			//if we don't have enough army size don't do anything
-			if (m_armyUnits.size() > 10)
+			//automatically attack close units
+
+			Unit u = m_armyUnits[i];
+			Unit enemy = u->getClosestUnit(IsEnemy);
+			if (u->isIdle())
 			{
-				Unit u = m_armyUnits[i];
+				if (enemy)
+					u->attack(enemy);
+			}
+
+			//if we don't have enough army size don't do anything
+			if (m_armyUnits.size() > 7)
+			{
 				//but if we do, attack
 				if (u->isIdle())
 				{
-					Unit enemy = u->getClosestUnit(IsEnemy);
 					if (enemy)
 					{
 						u->attack(enemy);

@@ -86,6 +86,7 @@ void BuildingManager::update()
 
 			//dont think this line is needed
 			//m_currentlyBuilding[i].m_buildingWorker = getAvailableWorker();
+			m_currentlyBuilding[i].m_buildingWorker->stop();
 			m_currentlyBuilding[i].m_buildingWorker->build(m_currentlyBuilding[i].m_building, m_currentlyBuilding[i].m_buildingLocation);
 		}
 		else
