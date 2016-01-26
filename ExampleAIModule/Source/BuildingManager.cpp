@@ -73,7 +73,7 @@ void BuildingManager::update()
 			m_currentlyBuilding[i].m_buildingWorker->build(m_currentlyBuilding[i].m_building, m_currentlyBuilding[i].m_buildingLocation);
 			
 		}
-		else if (m_currentlyBuilding[i].m_buildingWorker->isGatheringMinerals() || m_currentlyBuilding[i].m_buildingWorker->isGatheringGas())
+		else if (m_currentlyBuilding[i].m_buildingWorker->isGatheringMinerals() || m_currentlyBuilding[i].m_buildingWorker->isGatheringGas() || m_currentlyBuilding[i].m_buildingWorker->isIdle())
 		{
 			//THIS SHOULD NOT HAPPEN
 

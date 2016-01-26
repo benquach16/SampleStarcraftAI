@@ -164,7 +164,7 @@ void ExampleAIModule::onFrame()
 			{
 
 				u->build(UnitTypes::Terran_Marine);
-				m_armyManager.addArmyUnit(u);
+				
 			}
 		}
 		else if (u->getType() == UnitTypes::Terran_Factory && u->isCompleted())
@@ -182,7 +182,7 @@ void ExampleAIModule::onFrame()
 				{
 
 					u->build(UnitTypes::Terran_Siege_Tank_Tank_Mode);
-					m_armyManager.addArmyUnit(u);
+					
 				}
 			}
 		}
@@ -315,6 +315,7 @@ void ExampleAIModule::onUnitEvade(BWAPI::Unit unit)
 
 void ExampleAIModule::onUnitShow(BWAPI::Unit unit)
 {
+	
 	if (unit->getPlayer()->isEnemy(Broodwar->self()))
 	{
 		//found an enemy unit
@@ -338,6 +339,14 @@ void ExampleAIModule::onUnitHide(BWAPI::Unit unit)
 
 void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
 {
+
+	if (unit->getPlayer() == Broodwar->self())
+	{
+		if (unit->getType().canAttack())
+		{
+			m_armyManager.addArmyUnit(unit);
+		}
+	}
 	if (Broodwar->isReplay())
 	{
 		// if we are in a replay, then we will print out the build order of the structures
