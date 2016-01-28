@@ -180,3 +180,8 @@ void BuildingManager::beginConstructingBuilding(BWAPI::UnitType building)
 		Broodwar->sendText("This should not happen");
 	}
 }
+
+void BuildingManager::createNewExpansion(BWAPI::TilePosition expansion)
+{
+
+}

@@ -14,9 +14,13 @@ void ExampleAIModule::onStart()
 	m_buildingManager.buildQueue(UnitTypes::Terran_Refinery);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Factory);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Supply_Depot);
+	m_currentExpansionLocation = Broodwar->self()->getStartLocation();
+
+
 	// Print the map name.
 	// BWAPI returns std::string when retrieving a string, don't forget to add .c_str() when printing!
 	Broodwar << "The map is " << Broodwar->mapName() << "!" << std::endl;
+	
 
 	// Enable the UserInput flag, which allows us to control the bot and type messages.
 	Broodwar->enableFlag(Flag::UserInput);

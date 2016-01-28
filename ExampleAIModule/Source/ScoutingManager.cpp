@@ -8,6 +8,7 @@ ScoutingManager::ScoutingManager() : m_startLocation(0), m_enemyLocation(0), m_s
 	BWTA::analyze();
 	m_baseLocations = BWTA::getStartLocations();
 	m_startLocation = BWTA::getStartLocation(Broodwar->self())->getRegion();
+	m_allBases = BWTA::getStartLocations();
 }
 
 void ScoutingManager::setScout(BWAPI::Unit scout)
@@ -59,7 +60,8 @@ void ScoutingManager::update()
 		}
 		else
 		{
-
+			//this happens when you run out of bases to search but didnt find the enemy
+			//invalid map then
 		}
 	}
 
@@ -79,4 +81,23 @@ bool ScoutingManager::foundEnemyMain()
 Position ScoutingManager::getEnemyLocation()
 {
 	return m_enemyLocation->getCenter();
+}
+
+TilePosition ScoutingManager::getNextExpansionLocation(TilePosition currentExpansion)
+{
+	//loop through expos and find the nearest one
+	BWTA::BaseLocation *ret = *m_allBases.begin();
+
+	int minDistance = currentExpansion.getApproxDistance(ret->getTilePosition());
+	for (auto &u : m_allBases)
+	{
+		int tempDistance = currentExpansion.getApproxDistance(u->getTilePosition());
+		if (tempDistance < minDistance)
+		{
+			//found a closer base
+			minDistance = tempDistance;
+			ret = u;
+		}
+	}
+	return ret->getTilePosition();
 }
