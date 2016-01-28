@@ -17,8 +17,8 @@ Currently the hiearchy works as follows
 
     BenBot 
 	
-	| ------------------
-	|                    \
+	| ------------------------------------------
+	|                    \                      \
 	
-    ScoutingManager     BuildingManager
+    ScoutingManager     BuildingManager             ArmyManager
 	
