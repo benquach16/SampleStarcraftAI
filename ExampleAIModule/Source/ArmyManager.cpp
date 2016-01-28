@@ -2,6 +2,7 @@
 
 using namespace BWAPI;
 using namespace Filter;
+using namespace UnitTypes;
 
 ArmyManager::ArmyManager()
 {
@@ -26,8 +27,28 @@ void ArmyManager::update(BWAPI::Position enemyLocation)
 			Unit enemy = u->getClosestUnit(IsEnemy);
 			if (u->isIdle())
 			{
+		
+
 				if (enemy)
-					u->attack(enemy);
+				{
+					if (u->getType() == Terran_Siege_Tank_Tank_Mode)
+					{
+						//siege up first if we are a siege tank
+						if (enemy->getPosition().getApproxDistance(u->getPosition()) < 100)
+						{
+							u->siege();
+						}
+						else
+						{
+							u->unsiege();
+						}
+					}
+					else
+					{
+
+						u->attack(enemy);
+					}
+				}
 			}
 
 			//if we don't have enough army size don't do anything
@@ -36,15 +57,10 @@ void ArmyManager::update(BWAPI::Position enemyLocation)
 				//but if we do, attack
 				if (u->isIdle())
 				{
-					if (enemy)
-					{
-						u->attack(enemy);
-					}
-					else
-					{
-						//attack enemy location
-						u->attack(enemyLocation);
-					}
+		
+					//attack enemy location
+					u->attack(enemyLocation);
+					
 				}
 
 			}
