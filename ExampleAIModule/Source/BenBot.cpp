@@ -13,9 +13,11 @@ void ExampleAIModule::onStart()
 	m_buildingManager.buildQueue(UnitTypes::Terran_Barracks);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Refinery);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Factory);
+	m_buildingManager.buildQueue(UnitTypes::Terran_Command_Center);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Supply_Depot);
-	m_currentExpansionLocation = Broodwar->self()->getStartLocation();
 
+	TilePosition newExpo = m_scoutingManager.getNextExpansionLocation(Broodwar->self()->getStartLocation());
+	m_buildingManager.setNextExpansionLocation(newExpo);
 
 	// Print the map name.
 	// BWAPI returns std::string when retrieving a string, don't forget to add .c_str() when printing!
@@ -167,7 +169,7 @@ void ExampleAIModule::onFrame()
 			if (availMinerals >= UnitTypes::Terran_Marine.mineralPrice())
 			{
 
-				u->build(UnitTypes::Terran_Marine);
+				//u->build(UnitTypes::Terran_Marine);
 				
 			}
 		}

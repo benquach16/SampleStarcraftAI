@@ -8,7 +8,7 @@ ScoutingManager::ScoutingManager() : m_startLocation(0), m_enemyLocation(0), m_s
 	BWTA::analyze();
 	m_baseLocations = BWTA::getStartLocations();
 	m_startLocation = BWTA::getStartLocation(Broodwar->self())->getRegion();
-	m_allBases = BWTA::getStartLocations();
+	m_allBases = BWTA::getBaseLocations();
 }
 
 void ScoutingManager::setScout(BWAPI::Unit scout)
@@ -86,13 +86,25 @@ Position ScoutingManager::getEnemyLocation()
 TilePosition ScoutingManager::getNextExpansionLocation(TilePosition currentExpansion)
 {
 	//loop through expos and find the nearest one
+	std::set<BWTA::BaseLocation*> bases;
+	
+	for (auto &u : m_allBases)
+	{
+		//make sure we delete the current expansion
+		if (u->getTilePosition() == currentExpansion)
+		{
+			m_allBases.erase(u);
+		}
+	}
 	BWTA::BaseLocation *ret = *m_allBases.begin();
 
 	int minDistance = currentExpansion.getApproxDistance(ret->getTilePosition());
+
+	//make sure we dont accidently find current expansion
 	for (auto &u : m_allBases)
 	{
 		int tempDistance = currentExpansion.getApproxDistance(u->getTilePosition());
-		if (tempDistance < minDistance)
+		if (tempDistance < minDistance && tempDistance > 10)
 		{
 			//found a closer base
 			minDistance = tempDistance;

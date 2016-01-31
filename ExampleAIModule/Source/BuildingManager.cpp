@@ -73,7 +73,7 @@ void BuildingManager::update()
 			m_currentlyBuilding[i].m_buildingWorker->build(m_currentlyBuilding[i].m_building, m_currentlyBuilding[i].m_buildingLocation);
 			
 		}
-		else if (m_currentlyBuilding[i].m_buildingWorker->isGatheringMinerals() || m_currentlyBuilding[i].m_buildingWorker->isGatheringGas() || m_currentlyBuilding[i].m_buildingWorker->isIdle())
+		else if (m_currentlyBuilding[i].m_buildingWorker->isGatheringMinerals() || m_currentlyBuilding[i].m_buildingWorker->isGatheringGas())
 		{
 			//THIS SHOULD NOT HAPPEN
 
@@ -81,13 +81,32 @@ void BuildingManager::update()
 			//that bitch went back to mining
 			//must have somehow hit a race condition with minerals again or for some reason just did not start mining
 			//so restart
-			Broodwar->sendText("wtf?");
-			Broodwar->sendText(m_currentlyBuilding[i].m_building.getName().c_str());
-
+			//Broodwar->sendText(m_currentlyBuilding[i].m_building.getName().c_str());
+			Broodwar << Broodwar->getLastError() << std::endl;
 			//dont think this line is needed
 			//m_currentlyBuilding[i].m_buildingWorker = getAvailableWorker();
-			m_currentlyBuilding[i].m_buildingWorker->stop();
-			m_currentlyBuilding[i].m_buildingWorker->build(m_currentlyBuilding[i].m_building, m_currentlyBuilding[i].m_buildingLocation);
+			//
+			//setup a timer
+			if (!isAreaExplored(m_currentlyBuilding[i].m_buildingLocation))
+			{
+
+
+				Broodwar->sendText("area not explored?");
+				m_currentlyBuilding[i].m_buildingWorker->move(Position(m_currentlyBuilding[i].m_buildingLocation));
+			}
+			else
+			{
+				
+				Broodwar->sendText("area is explored?");
+				if (m_currentlyBuilding[i].m_lastCommand < Broodwar->getFrameCount())
+				{
+					//give some time to go explore
+					m_currentlyBuilding[i].m_buildingWorker->build(m_currentlyBuilding[i].m_building, m_currentlyBuilding[i].m_buildingLocation);
+					m_currentlyBuilding[i].m_lastCommand = Broodwar->getFrameCount() + 100;
+				}
+			}
+
+
 		}
 		else
 		{
@@ -157,6 +176,11 @@ Unit BuildingManager::getAvailableWorker()
 	return 0;
 }
 
+void BuildingManager::setNextExpansionLocation(TilePosition expand)
+{
+	m_nextExpandLocation = expand;
+}
+
 void BuildingManager::beginConstructingBuilding(BWAPI::UnitType building)
 {
 	//have enough minerals - for now
@@ -164,7 +188,18 @@ void BuildingManager::beginConstructingBuilding(BWAPI::UnitType building)
 	Unit builder = getAvailableWorker();
 	if (builder)
 	{
-		TilePosition targetBuildLocation = Broodwar->getBuildLocation(building, builder->getTilePosition());
+		TilePosition targetBuildLocation;
+		if (building.isResourceDepot())
+		{
+			//build this at an expo
+			//find closest build location
+			targetBuildLocation = m_nextExpandLocation;
+		}
+		else
+		{
+
+			targetBuildLocation = Broodwar->getBuildLocation(building, builder->getTilePosition());
+		}
 		builder->build(building, targetBuildLocation);
 
 		//reserve the minerals because race conditions
@@ -181,7 +216,30 @@ void BuildingManager::beginConstructingBuilding(BWAPI::UnitType building)
 	}
 }
 
-void BuildingManager::createNewExpansion(BWAPI::TilePosition expansion)
+void BuildingManager::beginConstructingBuilding(BWAPI::UnitType building, BWAPI::TilePosition spot)
 {
+	Unit builder = getAvailableWorker();
+	if (builder)
+	{
+		builder->build(building, spot);
+
+		//reserve the minerals because race condition
+		reservedMinerals += building.mineralPrice();
+		reservedGas += building.gasPrice();
+
+		//add this to a list of currently constructing buildings
+		buildingCommand cmd(builder, building, spot);
+		m_currentlyBuilding.push_back(cmd);
+	}
+	else
+	{
+		Broodwar->sendText("This should not happen");
+	}
+}
+
+bool BuildingManager::isAreaExplored(TilePosition area)
+{
+
+	return Broodwar->isExplored(area);
 
 }

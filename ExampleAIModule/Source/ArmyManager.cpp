@@ -34,7 +34,7 @@ void ArmyManager::update(BWAPI::Position enemyLocation)
 					if (u->getType() == Terran_Siege_Tank_Tank_Mode)
 					{
 						//siege up first if we are a siege tank
-						if (enemy->getPosition().getApproxDistance(u->getPosition()) < 100)
+						if (enemy->getPosition().getApproxDistance(u->getPosition()) < 1300)
 						{
 							u->siege();
 						}

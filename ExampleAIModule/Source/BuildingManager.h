@@ -10,7 +10,10 @@ struct buildingCommand
 	BWAPI::Unit m_buildingWorker;
 	BWAPI::UnitType m_building;
 	BWAPI::TilePosition m_buildingLocation;
-	buildingCommand(BWAPI::Unit buildingWorker, BWAPI::UnitType building, BWAPI::TilePosition buildingLocation) : m_buildingWorker(buildingWorker), m_building(building), m_buildingLocation(buildingLocation) {}
+	int m_lastCommand;
+	//forgive this line
+	
+	buildingCommand(BWAPI::Unit buildingWorker, BWAPI::UnitType building, BWAPI::TilePosition buildingLocation) : m_buildingWorker(buildingWorker), m_building(building), m_buildingLocation(buildingLocation), m_lastCommand(0) {}
 };
 
 class BuildingManager
@@ -31,14 +34,20 @@ public:
 	int getAvailableMinerals();
 	int getAvailableGas();
 
-	void createNewExpansion(BWAPI::TilePosition expo);
 
 	//TODO:: get worker from latest available expansion
 	BWAPI::Unit getAvailableWorker();
 	BWAPI::Unit getAvailableWorker(BWAPI::Position p);
 
+	void setNextExpansionLocation(BWAPI::TilePosition expand);
+
+	bool isAreaExplored(BWAPI::TilePosition area);
+
 protected:
+
+	BWAPI::TilePosition m_nextExpandLocation;
 	void beginConstructingBuilding(BWAPI::UnitType building);
+	void beginConstructingBuilding(BWAPI::UnitType building, BWAPI::TilePosition spot);
 
 	int reservedMinerals;
 	int reservedGas;
