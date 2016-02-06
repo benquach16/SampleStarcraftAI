@@ -7,11 +7,16 @@ it's also my personal bot. So it can also be semi-competitive.
 The main goal of the bot is to show off handling building queues in Starcraft Broodwar without having to deal with
 worker issues. It does this by reserving minerals and checking building statuses to see if a building has started.
 
+Dependencies
+---------
+BWAPI 4.7.1
+BWTA2.2
+
 
 Code Architecture
 ---------
 
-There are two other classes - BuildingManager and ScoutingManager
+There are three other classes - BuildingManager and ScoutingManager and ArmyManager
 
 Currently the hiearchy works as follows
 
