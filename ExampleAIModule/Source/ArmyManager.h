@@ -12,6 +12,9 @@ public:
 	void update(BWAPI::Position enemyLocation);
 
 	void addArmyUnit(BWAPI::Unit unit);
+
+
+	int getNumUnits(BWAPI::UnitType unittype);
 protected:
 	std::vector<BWAPI::Unit> m_armyUnits;
 };

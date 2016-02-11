@@ -9,15 +9,19 @@ void ExampleAIModule::onStart()
 {
 	m_workersMiningGas = 0;
 	Broodwar->sendText("This is BenBot");
+
+	TilePosition newExpo = m_scoutingManager.getNextExpansionLocation(Broodwar->self()->getStartLocation());
+	m_buildingManager.setNextExpansionLocation(newExpo);
+
 	m_buildingManager.buildQueue(UnitTypes::Terran_Supply_Depot);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Barracks);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Refinery);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Factory);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Command_Center);
-	m_buildingManager.buildQueue(UnitTypes::Terran_Supply_Depot);
+	m_buildingManager.buildQueue(UnitTypes::Terran_Bunker, newExpo);
+	m_buildingManager.buildQueue(UnitTypes::Terran_Factory);
+	
 
-	TilePosition newExpo = m_scoutingManager.getNextExpansionLocation(Broodwar->self()->getStartLocation());
-	m_buildingManager.setNextExpansionLocation(newExpo);
 
 	// Print the map name.
 	// BWAPI returns std::string when retrieving a string, don't forget to add .c_str() when printing!

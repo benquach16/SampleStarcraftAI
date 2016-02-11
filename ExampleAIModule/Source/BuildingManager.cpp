@@ -1,5 +1,7 @@
 #include "BuildingManager.h"
 
+#include "Util.h"
+
 using namespace BWAPI;
 
 BuildingManager::BuildingManager() : reservedMinerals(0), reservedGas(0)
@@ -8,14 +10,17 @@ BuildingManager::BuildingManager() : reservedMinerals(0), reservedGas(0)
 }
 
 
-void BuildingManager::buildQueue(UnitType building)
+void BuildingManager::buildQueue(UnitType building, TilePosition place)
 {
-	m_buildingQueue.push(building);
+	
+	buildingQueue newBldg(building, place);
+	m_buildingQueue.push(newBldg);
 }
 
-void BuildingManager::buildAsync(UnitType building)
+void BuildingManager::buildAsync(UnitType building, TilePosition place)
 {
-	m_buildingsToBuild.push_back(building);
+	buildingQueue newBldg(building, place);
+	m_buildingsToBuild.push_back(newBldg);
 }
 
 
@@ -35,12 +40,12 @@ void BuildingManager::update()
 
 	if (m_buildingQueue.size())
 	{
-		UnitType building = m_buildingQueue.front();
+		UnitType building = m_buildingQueue.front().m_building;
 		if (getAvailableMinerals() >= building.mineralPrice() && getAvailableGas() >= building.gasPrice())
 		{
 			std::string str("building " + building.getName());
 			Broodwar->sendText(str.c_str());
-			beginConstructingBuilding(building);
+			beginConstructingBuilding(m_buildingQueue.front());
 			m_buildingQueue.pop();
 		}
 	}
@@ -48,10 +53,11 @@ void BuildingManager::update()
 	//iterate through async building queue
 	for (unsigned i = 0; i < m_buildingsToBuild.size();)
 	{
-		UnitType building = m_buildingsToBuild[i];
+		buildingQueue newBldg = m_buildingsToBuild[i];
+		BWAPI::UnitType building = newBldg.m_building;
 		if (getAvailableMinerals() >= building.mineralPrice() && getAvailableGas() >= building.gasPrice())
 		{
-			beginConstructingBuilding(building);
+			beginConstructingBuilding(newBldg);
 			//remove from vector
 			m_buildingsToBuild.erase(m_buildingsToBuild.begin() + i);
 		}
@@ -153,38 +159,16 @@ int BuildingManager::getAvailableGas()
 }
 
 
-Unit BuildingManager::getAvailableWorker()
-{
-	//TEMPORARY FOR REAL
-	//GET A WAY TO FIND THE CLOSEST WORKER TO A BASE SINCE IT MIGHT GRAB THE SCOUTING SCV
-	for (auto &u : Broodwar->self()->getUnits())
-	{
-		if (!u->exists())
-			continue;
-		if (u->isLockedDown() || u->isMaelstrommed() || u->isStasised())
-			continue;
-		if (u->isLoaded() || !u->isPowered() || u->isStuck())
-			continue;
-		if (!u->isCompleted() || u->isConstructing())
-			continue;
-
-		if (u->getType().isWorker() && u->isGatheringMinerals())
-		{
-			return u;
-		}
-	}
-	return 0;
-}
-
 void BuildingManager::setNextExpansionLocation(TilePosition expand)
 {
 	m_nextExpandLocation = expand;
 }
 
-void BuildingManager::beginConstructingBuilding(BWAPI::UnitType building)
+void BuildingManager::beginConstructingBuilding(buildingQueue newBldg)
 {
 	//have enough minerals - for now
 	//make sure we keep track of the worker so that we dont 'lose' the building if we run out of minerals
+	UnitType building = newBldg.m_building;
 	Unit builder = getAvailableWorker();
 	if (builder)
 	{
@@ -197,8 +181,17 @@ void BuildingManager::beginConstructingBuilding(BWAPI::UnitType building)
 		}
 		else
 		{
+			//do we build at custom location
+			if (newBldg.m_desiredPosition == TilePositions::None)
+			{
 
-			targetBuildLocation = Broodwar->getBuildLocation(building, builder->getTilePosition());
+				targetBuildLocation = Broodwar->getBuildLocation(building, builder->getTilePosition());
+			}
+			else
+			{
+
+				targetBuildLocation = Broodwar->getBuildLocation(building, newBldg.m_desiredPosition);
+			}
 		}
 		builder->build(building, targetBuildLocation);
 
@@ -208,27 +201,6 @@ void BuildingManager::beginConstructingBuilding(BWAPI::UnitType building)
 
 		//add this to a list of currently constructing buildings
 		buildingCommand cmd(builder, building, targetBuildLocation);
-		m_currentlyBuilding.push_back(cmd);
-	}
-	else
-	{
-		Broodwar->sendText("This should not happen");
-	}
-}
-
-void BuildingManager::beginConstructingBuilding(BWAPI::UnitType building, BWAPI::TilePosition spot)
-{
-	Unit builder = getAvailableWorker();
-	if (builder)
-	{
-		builder->build(building, spot);
-
-		//reserve the minerals because race condition
-		reservedMinerals += building.mineralPrice();
-		reservedGas += building.gasPrice();
-
-		//add this to a list of currently constructing buildings
-		buildingCommand cmd(builder, building, spot);
 		m_currentlyBuilding.push_back(cmd);
 	}
 	else

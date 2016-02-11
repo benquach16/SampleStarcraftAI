@@ -104,12 +104,14 @@
     <ClCompile Include="Source\Dll.cpp" />
     <ClCompile Include="Source\BenBot.cpp" />
     <ClCompile Include="Source\ScoutingManager.cpp" />
+    <ClCompile Include="Source\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\ArmyManager.h" />
     <ClInclude Include="Source\BenBot.h" />
     <ClInclude Include="Source\BuildingManager.h" />
     <ClInclude Include="Source\ScoutingManager.h" />
+    <ClInclude Include="Source\Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
