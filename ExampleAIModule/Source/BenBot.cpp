@@ -19,6 +19,7 @@ void ExampleAIModule::onStart()
 	m_buildingManager.buildQueue(UnitTypes::Terran_Factory);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Command_Center);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Bunker, newExpo);
+	m_buildingManager.buildQueue(UnitTypes::Terran_Bunker, newExpo);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Factory);
 	
 

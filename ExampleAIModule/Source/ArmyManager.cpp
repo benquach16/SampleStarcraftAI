@@ -35,7 +35,7 @@ void ArmyManager::update(BWAPI::Position enemyLocation)
 					if (u->getType() == Terran_Siege_Tank_Tank_Mode)
 					{
 						//siege up first if we are a siege tank
-						if (enemy->getPosition().getApproxDistance(u->getPosition()) < 3000)
+						if (enemy->getPosition().getApproxDistance(u->getPosition()) < 400)
 						{
 							u->siege();
 						}
@@ -50,19 +50,55 @@ void ArmyManager::update(BWAPI::Position enemyLocation)
 						u->attack(enemy);
 					}
 				}
-				else if (u->getType() == Terran_Marine)
+				else
 				{
-					Unit bunker = findAvailableBunker();
-					if (bunker != NULL)
+					if (u->getType() == Terran_Siege_Tank_Siege_Mode)
 					{
-						//go into bunker
-						u->load(bunker);
+						u->siege();
+					}
+					if (u->getType() == Terran_Marine)
+					{
+						Unit bunker = findAvailableBunker();
+						if (bunker != NULL)
+						{
+							//go into bunker
+							u->load(bunker);
+						}
 					}
 				}
 			}
 
+			else
+			{
+				//make sure we attack if there is an enemy while we move
+				//do specialized siege tank code here
+				//if they are attacking
+				Unit enemy = u->getClosestUnit(IsEnemy);
+				if (enemy)
+				{
+					if (u->getType() == Terran_Siege_Tank_Tank_Mode)
+					{
+						//siege up first if we are a siege tank
+						if (enemy->getPosition().getApproxDistance(u->getPosition()) < 400)
+						{
+							u->siege();
+						}
+						else
+						{
+							u->unsiege();
+						}
+					}
+				}
+
+				if (u->isAttacking() && u->getType() == Terran_Siege_Tank_Tank_Mode)
+				{
+					u->siege();
+				}
+				
+			}
+
 			//if we don't have enough army size don't do anything
-			if (m_armyUnits.size() > 7)
+			if (m_armyUnits.size() > 10)
 			{
 				//but if we do, attack
 				if (u->isIdle())
