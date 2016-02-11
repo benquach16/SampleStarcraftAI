@@ -87,8 +87,8 @@ void BuildingManager::update()
 			//that bitch went back to mining
 			//must have somehow hit a race condition with minerals again or for some reason just did not start mining
 			//so restart
-			//Broodwar->sendText(m_currentlyBuilding[i].m_building.getName().c_str());
-			Broodwar << Broodwar->getLastError() << std::endl;
+			Broodwar->sendText(m_currentlyBuilding[i].m_building.getName().c_str());
+			//Broodwar << Broodwar->getLastError() << std::endl;
 			//dont think this line is needed
 			//m_currentlyBuilding[i].m_buildingWorker = getAvailableWorker();
 			//
@@ -104,9 +104,11 @@ void BuildingManager::update()
 			{
 				
 				Broodwar->sendText("area is explored?");
+				//find a new bldg location
 				if (m_currentlyBuilding[i].m_lastCommand < Broodwar->getFrameCount())
 				{
 					//give some time to go explore
+					m_currentlyBuilding[i].m_buildingLocation = Broodwar->getBuildLocation(m_currentlyBuilding[i].m_building, m_currentlyBuilding[i].m_buildingWorker->getTilePosition());
 					m_currentlyBuilding[i].m_buildingWorker->build(m_currentlyBuilding[i].m_building, m_currentlyBuilding[i].m_buildingLocation);
 					m_currentlyBuilding[i].m_lastCommand = Broodwar->getFrameCount() + 100;
 				}
