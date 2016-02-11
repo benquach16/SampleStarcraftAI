@@ -37,3 +37,20 @@ BWAPI::Unit getAvailableWorker()
 	return 0;
 }
 
+BWAPI::Unit findAvailableBunker()
+{
+	//search for a not full bunker
+	for (auto &u : Broodwar->self()->getUnits())
+	{
+		if (u->getType() == UnitTypes::Terran_Bunker)
+		{
+			if (u->getLoadedUnits().size() < UnitTypes::Terran_Bunker.spaceProvided())
+			{
+				return u;
+			}
+		}
+	}
+
+	//no bunker
+	return NULL;
+}

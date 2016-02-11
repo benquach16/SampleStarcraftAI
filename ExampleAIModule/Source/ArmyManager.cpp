@@ -1,4 +1,5 @@
 #include "ArmyManager.h"
+#include "Util.h"
 
 using namespace BWAPI;
 using namespace Filter;
@@ -27,7 +28,7 @@ void ArmyManager::update(BWAPI::Position enemyLocation)
 			Unit enemy = u->getClosestUnit(IsEnemy);
 			if (u->isIdle())
 			{
-		
+				
 
 				if (enemy)
 				{
@@ -47,6 +48,15 @@ void ArmyManager::update(BWAPI::Position enemyLocation)
 					{
 
 						u->attack(enemy);
+					}
+				}
+				else if (u->getType() == Terran_Marine)
+				{
+					Unit bunker = findAvailableBunker();
+					if (bunker != NULL)
+					{
+						//go into bunker
+						u->load(bunker);
 					}
 				}
 			}

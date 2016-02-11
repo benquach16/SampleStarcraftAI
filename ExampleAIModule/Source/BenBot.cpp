@@ -173,7 +173,7 @@ void ExampleAIModule::onFrame()
 			if (availMinerals >= UnitTypes::Terran_Marine.mineralPrice())
 			{
 
-				//u->build(UnitTypes::Terran_Marine);
+				u->build(UnitTypes::Terran_Marine);
 				
 			}
 		}
