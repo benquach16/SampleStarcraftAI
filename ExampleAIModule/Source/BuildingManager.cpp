@@ -110,7 +110,7 @@ void BuildingManager::update()
 					//give some time to go explore
 					m_currentlyBuilding[i].m_buildingLocation = Broodwar->getBuildLocation(m_currentlyBuilding[i].m_building, m_currentlyBuilding[i].m_buildingWorker->getTilePosition());
 					m_currentlyBuilding[i].m_buildingWorker->build(m_currentlyBuilding[i].m_building, m_currentlyBuilding[i].m_buildingLocation);
-					m_currentlyBuilding[i].m_lastCommand = Broodwar->getFrameCount() + 100;
+					m_currentlyBuilding[i].m_lastCommand = Broodwar->getFrameCount() + 40;
 				}
 			}
 

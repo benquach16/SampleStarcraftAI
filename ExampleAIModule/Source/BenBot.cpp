@@ -199,7 +199,8 @@ void ExampleAIModule::onFrame()
 		}
 		else if (u->getType() == UnitTypes::Terran_Machine_Shop && u->isCompleted())
 		{
-			u->research(TechTypes::Tank_Siege_Mode);
+			if (availMinerals >= TechTypes::Tank_Siege_Mode.mineralPrice() && availGas >= TechTypes::Tank_Siege_Mode.gasPrice())
+				u->research(TechTypes::Tank_Siege_Mode);
 		}
 		else if (u->getType().isResourceDepot()) // A resource depot is a Command Center, Nexus, or Hatchery
 		{
@@ -256,7 +257,8 @@ void ExampleAIModule::onFrame()
 									supplyProviderType.buildTime() + 100);  // frames to run
 
 								// Order the builder to construct the supply structure
-								supplyBuilder->build(supplyProviderType, targetBuildLocation);
+								//supplyBuilder->build(supplyProviderType, targetBuildLocation);
+								m_buildingManager.buildAsync(supplyProviderType);
 							}
 						}
 						else
