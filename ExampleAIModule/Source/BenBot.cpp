@@ -1,4 +1,5 @@
 #include "BenBot.h"
+#include "Util.h"
 
 #include <iostream>
 
@@ -7,10 +8,11 @@ using namespace Filter;
 
 void ExampleAIModule::onStart()
 {
+	initBases();
 	m_workersMiningGas = 0;
 	Broodwar->sendText("This is BenBot");
 
-	TilePosition newExpo = m_scoutingManager.getNextExpansionLocation(Broodwar->self()->getStartLocation());
+	TilePosition newExpo = getNextExpansionLocation(Broodwar->self()->getStartLocation());
 	m_buildingManager.setNextExpansionLocation(newExpo);
 
 	m_buildingManager.buildQueue(UnitTypes::Terran_Supply_Depot);
@@ -20,9 +22,11 @@ void ExampleAIModule::onStart()
 	m_buildingManager.buildQueue(UnitTypes::Terran_Command_Center);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Bunker, newExpo);
 	m_buildingManager.buildQueue(UnitTypes::Terran_Bunker, newExpo);
-	m_buildingManager.buildQueue(UnitTypes::Terran_Factory);
-	
-
+	m_buildingManager.buildQueue(UnitTypes::Terran_Factory, Broodwar->self()->getStartLocation());
+	m_buildingManager.buildQueue(UnitTypes::Terran_Refinery, newExpo);
+	m_buildingManager.buildQueue(UnitTypes::Terran_Engineering_Bay);
+	m_buildingManager.buildQueue(UnitTypes::Terran_Command_Center);
+	m_buildingManager.buildQueue(UnitTypes::Terran_Refinery);
 
 	// Print the map name.
 	// BWAPI returns std::string when retrieving a string, don't forget to add .c_str() when printing!
@@ -261,7 +265,7 @@ void ExampleAIModule::onFrame()
 
 								// Order the builder to construct the supply structure
 								//supplyBuilder->build(supplyProviderType, targetBuildLocation);
-								m_buildingManager.buildAsync(supplyProviderType);
+								m_buildingManager.buildAsync(supplyProviderType, Broodwar->self()->getStartLocation());
 							}
 						}
 						else

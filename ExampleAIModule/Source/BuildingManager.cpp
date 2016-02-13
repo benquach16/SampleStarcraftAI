@@ -184,7 +184,9 @@ void BuildingManager::beginConstructingBuilding(buildingQueue newBldg)
 		{
 			//build this at an expo
 			//find closest build location
-			targetBuildLocation = m_nextExpandLocation;
+			targetBuildLocation = m_nextExpandLocation; 
+			//set new expo location
+			setNextExpansionLocation(getNextExpansionLocation(targetBuildLocation));
 		}
 		else
 		{

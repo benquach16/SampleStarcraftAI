@@ -16,6 +16,8 @@ public:
 	bool foundEnemyMain();
 
 	BWAPI::Position getEnemyLocation();
+
+
 	BWAPI::TilePosition getNextExpansionLocation(BWAPI::TilePosition currentExpansion);
 protected:
 	BWAPI::Unit m_scout;
@@ -25,7 +27,6 @@ protected:
 	std::queue<BWAPI::UnitType> m_buildQueue;
 	//this is for scouting
 	std::set<BWTA::BaseLocation*> m_baseLocations;
-
 	//dont modify this
 	std::set<BWTA::BaseLocation*> m_allBases;
 };

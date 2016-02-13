@@ -1,5 +1,5 @@
 #include "ScoutingManager.h"
-
+#include "Util.h"
 using namespace BWAPI;
 
 ScoutingManager::ScoutingManager() : m_startLocation(0), m_enemyLocation(0), m_scout(0)
