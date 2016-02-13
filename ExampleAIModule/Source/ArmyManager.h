@@ -15,6 +15,8 @@ public:
 
 
 	int getNumUnits(BWAPI::UnitType unittype);
+	//find units in bunkers, transport ships, etc
+	int getUnusableUnits();
 protected:
 	std::vector<BWAPI::Unit> m_armyUnits;
 };

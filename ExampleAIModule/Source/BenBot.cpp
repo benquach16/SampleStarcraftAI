@@ -180,6 +180,9 @@ void ExampleAIModule::onFrame()
 		}
 		else if (u->getType() == UnitTypes::Terran_Factory && u->isCompleted())
 		{
+
+			TilePosition newExpo = m_scoutingManager.getNextExpansionLocation(Broodwar->self()->getStartLocation());
+			u->setRallyPoint(Position(newExpo));
 			if (u->getAddon() == 0)
 			{
 				//build an addon if there is none

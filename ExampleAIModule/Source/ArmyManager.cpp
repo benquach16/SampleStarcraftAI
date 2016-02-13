@@ -25,7 +25,7 @@ void ArmyManager::update(BWAPI::Position enemyLocation)
 			//automatically attack close units
 
 			Unit u = m_armyUnits[i];
-			Unit enemy = u->getClosestUnit(IsEnemy);
+			Unit enemy = u->getClosestUnit(IsEnemy,1000);
 			if (u->isIdle())
 			{
 				
@@ -54,7 +54,7 @@ void ArmyManager::update(BWAPI::Position enemyLocation)
 				{
 					if (u->getType() == Terran_Siege_Tank_Siege_Mode)
 					{
-						u->siege();
+						u->unsiege();
 					}
 					if (u->getType() == Terran_Marine)
 					{
@@ -98,7 +98,7 @@ void ArmyManager::update(BWAPI::Position enemyLocation)
 			}
 
 			//if we don't have enough army size don't do anything
-			if (m_armyUnits.size() > 10)
+			if (m_armyUnits.size() - getUnusableUnits() > 10)
 			{
 				//but if we do, attack
 				if (u->isIdle())
@@ -129,6 +129,17 @@ int ArmyManager::getNumUnits(BWAPI::UnitType unittype)
 		{
 			counter++;
 		}
+	}
+	return counter;
+}
+
+int ArmyManager::getUnusableUnits()
+{
+	int counter = 0;
+	for (int i = 0; i < m_armyUnits.size(); i++)
+	{
+		if (m_armyUnits[i]->isLoaded())
+			counter++;
 	}
 	return counter;
 }

@@ -35,6 +35,8 @@ public:
 	void buildQueue(BWAPI::UnitType building, BWAPI::TilePosition place = BWAPI::TilePositions::None);
 	//for when we want to build something now, fuck build orders
 	void buildAsync(BWAPI::UnitType building, BWAPI::TilePosition place = BWAPI::TilePositions::None);
+	//for when we want to build something now, but not fuck our build order
+	void buildAfterQueue(BWAPI::UnitType building, BWAPI::TilePosition place = BWAPI::TilePositions::None);
 
 	//this is used to REMOVE from the currently building list
 	void buildingStarted(BWAPI::Unit building);

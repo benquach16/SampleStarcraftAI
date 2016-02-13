@@ -23,6 +23,11 @@ void BuildingManager::buildAsync(UnitType building, TilePosition place)
 	m_buildingsToBuild.push_back(newBldg);
 }
 
+void BuildingManager::buildAfterQueue(UnitType building, TilePosition place)
+{
+
+}
+
 
 void BuildingManager::update()
 {

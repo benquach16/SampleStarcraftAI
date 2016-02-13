@@ -7,10 +7,12 @@ using namespace BWTA;
 
 BWAPI::TilePosition getChokepoint(TilePosition currentChoke)
 {
+	int minDistance = 99999;
+
 	std::set<BWTA::Chokepoint*> chokepoints = BWTA::getChokepoints();
 	for (auto &u : chokepoints)
 	{
-		
+
 	}
 }
 
