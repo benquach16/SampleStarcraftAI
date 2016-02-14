@@ -98,7 +98,7 @@ void ArmyManager::update(BWAPI::Position enemyLocation)
 			}
 
 			//if we don't have enough army size don't do anything
-			if (m_armyUnits.size() - getUnusableUnits() > 10)
+			if (m_armyUnits.size() - getUnusableUnits() > 12)
 			{
 				//but if we do, attack
 				if (u->isIdle())
